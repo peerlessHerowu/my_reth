@@ -51,7 +51,7 @@ fn get_bearer(headers: &HeaderMap) -> Option<String> {
     let prefix = "Bearer ";
     let index = auth.find(prefix)?;
     let token: &str = &auth[index + prefix.len()..];
-    tracing::info!("get_bearer: {}", token.into());
+    info!("get_bearer: {}", token);
     Some(token.into())
 }
 
