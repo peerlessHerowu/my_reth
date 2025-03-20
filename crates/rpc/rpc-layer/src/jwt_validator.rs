@@ -28,14 +28,15 @@ impl AuthValidator for JwtAuthValidator {
 
                 Ok(_) => Ok(()),
                 Err(e) => {
-                    error!(target: "engine::jwt-validator", "Invalid JWT: {e}");
+                    error!(target: "engine::jwt-validator111", "Invalid JWT: {e}");
                     let response = err_response(e);
                     Err(response)
                 }
             },
             None => {
                 let e = JwtError::MissingOrInvalidAuthorizationHeader;
-                error!(target: "engine::jwt-validator", "Invalid JWT: {e}");
+                error!(target: "engine::jwt-validator111", "Invalid JWT: {e}");
+                error!("get_bearer jwt: {}", jwt);
                 let response = err_response(e);
                 Err(response)
             }
@@ -47,11 +48,11 @@ impl AuthValidator for JwtAuthValidator {
 /// token from an authorization Http header.
 fn get_bearer(headers: &HeaderMap) -> Option<String> {
     let header = headers.get(header::AUTHORIZATION)?;
+    info!("get_bearer: {} >>>1111", header);
     let auth: &str = header.to_str().ok()?;
     let prefix = "Bearer ";
     let index = auth.find(prefix)?;
     let token: &str = &auth[index + prefix.len()..];
-    info!("get_bearer: {}", token);
     Some(token.into())
 }
 
