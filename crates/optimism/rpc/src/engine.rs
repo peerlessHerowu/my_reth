@@ -22,6 +22,7 @@ use tracing::trace;
 ///
 /// Spec: <https://specs.optimism.io/protocol/exec-engine.html>
 pub const OP_ENGINE_CAPABILITIES: &[&str] = &[
+    "engine_forkchoiceUpdatedV1",
     "engine_forkchoiceUpdatedV2",
     "engine_forkchoiceUpdatedV3",
     "engine_exchangeTransitionConfigurationV1",
