@@ -14,6 +14,7 @@ use reth_node_core::version::{CARGO_PKG_VERSION, CLIENT_CODE, VERGEN_GIT_SHA};
 use reth_optimism_rpc::engine::OP_ENGINE_CAPABILITIES;
 use reth_payload_builder::PayloadStore;
 use reth_rpc_engine_api::{EngineApi, EngineCapabilities};
+use reth_tracing::tracing::info;
 
 /// Builder for basic [`OpEngineApi`] implementation.
 #[derive(Debug, Default)]
@@ -60,6 +61,7 @@ where
             EngineCapabilities::new(OP_ENGINE_CAPABILITIES.iter().copied()),
             engine_validator,
         );
+        info!(target: "rpc::engine", "OP_ENGINE_CAPABILITIES");
 
         Ok(OpEngineApi::new(inner))
     }

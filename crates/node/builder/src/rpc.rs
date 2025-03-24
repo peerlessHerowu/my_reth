@@ -731,6 +731,8 @@ where
             version: CARGO_PKG_VERSION.to_string(),
             commit: VERGEN_GIT_SHA.to_string(),
         };
+        info!(target: "rpc::engine", "CAPABILITIES");
+
         Ok(EngineApi::new(
             ctx.node.provider().clone(),
             ctx.config.chain.clone(),

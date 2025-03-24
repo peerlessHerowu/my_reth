@@ -10,7 +10,7 @@ use alloy_rpc_types_engine::{
 };
 use alloy_transport::TransportResult;
 use reth_node_api::EngineApiMessageVersion;
-use tracing::error;
+use tracing::{error, info};
 
 /// An extension trait for providers that implement the engine API, to wait for a VALID response.
 #[async_trait::async_trait]
@@ -122,7 +122,7 @@ where
             if status.is_syncing() {
                 return Err(alloy_json_rpc::RpcError::UnsupportedFeature(
                     "invalid range: no canonical state found for parent of requested block",
-                ))
+                ));
             }
             status = self
                 .new_payload_v3(payload.clone(), versioned_hashes.clone(), parent_beacon_block_root)
@@ -136,8 +136,10 @@ where
         fork_choice_state: ForkchoiceState,
         payload_attributes: Option<PayloadAttributes>,
     ) -> TransportResult<ForkchoiceUpdated> {
+        info!(target: "rpc::engine", "fork_choice_updated_v1_wait");
         let mut status =
             self.fork_choice_updated_v1(fork_choice_state, payload_attributes.clone()).await?;
+        info!("fork_choice_updated_v1 status11{:?}.", status);
 
         while !status.is_valid() {
             if status.is_invalid() {
@@ -152,10 +154,11 @@ where
             if status.is_syncing() {
                 return Err(alloy_json_rpc::RpcError::UnsupportedFeature(
                     "invalid range: no canonical state found for parent of requested block",
-                ))
+                ));
             }
             status =
                 self.fork_choice_updated_v1(fork_choice_state, payload_attributes.clone()).await?;
+            info!("fork_choice_updated_v1 status22{:?}.", status);
         }
 
         Ok(status)
@@ -182,7 +185,7 @@ where
             if status.is_syncing() {
                 return Err(alloy_json_rpc::RpcError::UnsupportedFeature(
                     "invalid range: no canonical state found for parent of requested block",
-                ))
+                ));
             }
             status =
                 self.fork_choice_updated_v2(fork_choice_state, payload_attributes.clone()).await?;
@@ -196,8 +199,10 @@ where
         fork_choice_state: ForkchoiceState,
         payload_attributes: Option<PayloadAttributes>,
     ) -> TransportResult<ForkchoiceUpdated> {
+        info!(target: "rpc::engine", "fork_choice_updated_v3_wait");
         let mut status =
             self.fork_choice_updated_v3(fork_choice_state, payload_attributes.clone()).await?;
+        info!("fork_choice_updated_v3_wait status11{:?}.", status);
 
         while !status.is_valid() {
             if status.is_invalid() {
@@ -211,6 +216,7 @@ where
             }
             status =
                 self.fork_choice_updated_v3(fork_choice_state, payload_attributes.clone()).await?;
+            info!("fork_choice_updated_v3_wait status22{:?}.", status);
         }
 
         Ok(status)
@@ -269,12 +275,14 @@ pub(crate) async fn call_forkchoice_updated<N, P: EngineApiValidWaitExt<N>>(
     match message_version {
         EngineApiMessageVersion::V4 => todo!("V4 payloads not supported yet"),
         EngineApiMessageVersion::V3 => {
+            info!("fork_choice_updated_v3_wait");
             provider.fork_choice_updated_v3_wait(forkchoice_state, payload_attributes).await
         }
         EngineApiMessageVersion::V2 => {
             provider.fork_choice_updated_v2_wait(forkchoice_state, payload_attributes).await
         }
         EngineApiMessageVersion::V1 => {
+            info!("fork_choice_updated_v3_wait");
             provider.fork_choice_updated_v1_wait(forkchoice_state, payload_attributes).await
         }
     }
