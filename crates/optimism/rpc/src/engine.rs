@@ -281,7 +281,6 @@ where
         fork_choice_state: ForkchoiceState,
         payload_attributes: Option<EngineT::PayloadAttributes>,
     ) -> RpcResult<ForkchoiceUpdated> {
-        info!(target: "rpc::engine", "Serving engine_forkchoiceUpdatedV1");
         Ok(self.inner.fork_choice_updated_v1_metered(fork_choice_state, payload_attributes).await?)
     }
 
