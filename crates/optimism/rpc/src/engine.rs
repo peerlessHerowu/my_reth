@@ -16,7 +16,7 @@ use reth_provider::{BlockReader, HeaderProvider, StateProviderFactory};
 use reth_rpc_api::IntoEngineApiRpcModule;
 use reth_rpc_engine_api::EngineApi;
 use reth_transaction_pool::TransactionPool;
-use tracing::trace;
+use tracing::{info, trace};
 
 /// The list of all supported Engine capabilities available over the engine endpoint.
 ///
@@ -282,7 +282,7 @@ where
         payload_attributes: Option<EngineT::PayloadAttributes>,
     ) -> RpcResult<ForkchoiceUpdated> {
         info!(target: "rpc::engine", "Serving engine_forkchoiceUpdatedV1");
-        Ok(self.fork_choice_updated_v1_metered(fork_choice_state, payload_attributes).await?)
+        Ok(self.inner.fork_choice_updated_v1_metered(fork_choice_state, payload_attributes).await?)
     }
 
     async fn fork_choice_updated_v2(
