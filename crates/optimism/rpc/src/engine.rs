@@ -97,7 +97,6 @@ pub trait OpEngineApi<Engine: EngineTypes> {
         fork_choice_state: ForkchoiceState,
         payload_attributes: Option<Engine::PayloadAttributes>,
     ) -> RpcResult<ForkchoiceUpdated>;
-
     /// Updates the execution layer client with the given fork choice, as specified for the Shanghai
     /// fork.
     ///
@@ -275,6 +274,15 @@ where
         );
 
         Ok(self.inner.new_payload_v4_metered(payload).await?)
+    }
+
+    async fn fork_choice_updated_v1(
+        &self,
+        fork_choice_state: ForkchoiceState,
+        payload_attributes: Option<EngineT::PayloadAttributes>,
+    ) -> RpcResult<ForkchoiceUpdated> {
+        info!(target: "rpc::engine", "Serving engine_forkchoiceUpdatedV1");
+        Ok(self.fork_choice_updated_v1_metered(fork_choice_state, payload_attributes).await?)
     }
 
     async fn fork_choice_updated_v2(
